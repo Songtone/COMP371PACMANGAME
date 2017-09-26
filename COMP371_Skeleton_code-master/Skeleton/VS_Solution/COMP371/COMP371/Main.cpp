@@ -20,7 +20,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 // Window dimensions
-const GLuint WIDTH = 1000, HEIGHT = 600;
+const GLuint WIDTH = 800, HEIGHT = 800;
 
 glm::vec3 camera_position;
 glm::vec3 triangle_scale;
@@ -30,18 +30,24 @@ float cameraX = 0.0f;
 float cameraZ = 1.0f;
 float radius = 5.0f;
 
+float getXPosition();
+float getYPosition();
+
 float pacmanScale = 1.0f;
-float pacmanPosX = 0.0f;
-float pacmanPosY = 0.0f;
+float pacmanPosX = getXPosition();
+float pacmanPosY = getYPosition();
 float pacmanDirection = 0.0;
 
 float dotScale = 1.0f;
+float dotPosX = getXPosition();
+float dotPosY = getYPosition();
 
 
 float ROTATOR = 0.0f;
 
 
-
+int yPosition; //for random numbers
+int xPosition; //for random numbers
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -338,6 +344,7 @@ int main()
 
 
 	triangle_scale = glm::vec3(0.001f);
+	glm::vec3 pacman_original_scale = glm::vec3(0.001f);
 	glm::vec3 dot_original_scale = glm::vec3(0.01f);
 
 	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
@@ -395,24 +402,26 @@ int main()
 		glDrawArrays(GL_LINES, 0, 6);
 		glBindVertexArray(0);
 		
+
+		//pacman section
 		glm::vec3 pacmanPosition = { pacmanPosX, pacmanPosY, 0.0f };//define pacman original position
 		glm::mat4 model_pacman; //defines the model_matrix
 		glm::mat4 identity_matrix_pacman(1.0f);
-		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*triangle_scale);//scale pacman object
+		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
 		glm::mat4 pacmanTranslate = glm::translate(model_pacman, pacmanPosition);//translate pacman
 		glm::mat4 pacmanRotationY = glm::rotate(model_pacman,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));//rotate on Y
 		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix_pacman; // trans * scale* rot * identity
 		glm::mat4 pacmanLook = glm::rotate(model_pacman, glm::radians(pacmanDirection), glm::vec3(0.0f, 0.0f, 1.0f));//will rotate where pacman looks at
 		model_pacman = pacmanLook * identity_matrix_pacman;
-
+		
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
 		//rendering pacman
 		glBindVertexArray(VAO_pacman);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 		
-
-		glm::vec3 dotPosition = { 0.2f,0.4f,0.0f };
+		//begin of dot section
+		glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
 		glm::mat4 model_dot;
 		glm::mat4 identity_matrix_dot(1.0f);
 		glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
@@ -464,32 +473,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 		cameraZ = cameraZ + 0.5f;
 	};
-	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
 		pacmanScale += 0.2f;
+		dotScale += 0.2f;
 	};
-	if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_J && action == GLFW_PRESS) {//scale down the objects
 		pacmanScale -= 0.2f;
+		dotScale -= 0.2f;
 	};
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		if (pacmanPosY <= 0.36f) {
+		if (pacmanPosY <= 0.4f) {
 			pacmanPosY += 0.04f;
 			pacmanDirection = 90;
 		};
+		cout << pacmanPosY << endl;
 	};
 	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
-		if (pacmanPosY >= -0.36f) {
+		if (pacmanPosY >= -0.4f) {
 			pacmanPosY -= 0.04f;
 			pacmanDirection = 270;
 		};
 	};
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-		if (pacmanPosX <= 0.36f) {
+		if (pacmanPosX <= 0.4f) {
 			pacmanPosX += 0.04f;
 			pacmanDirection = 0;
 		};
 	};
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-		if (pacmanPosY >= -0.36f) {
+		if (pacmanPosX >= -0.4f) {
 			pacmanPosX -= 0.04f;
 			pacmanDirection = 180;
 		};
@@ -498,4 +510,108 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
+};
+
+float getYPosition() {
+	yPosition = rand() % 22 + 1;
+
+	switch (yPosition) {
+	case 1:return 0.42f;
+		break;
+	case 2:return 0.38f;
+		break;
+	case 3:return 0.34f;
+		break;
+	case 4:return 0.30f;
+		break;
+	case 5:return 0.26f;
+		break;
+	case 6:return 0.22f;
+		break;
+	case 7:return 0.18f;
+		break;
+	case 8:return 0.14f;
+		break;
+	case 9:return 0.10f;
+		break;
+	case 10:return 0.06f;
+		break;
+	case 11:return 0.02f;
+		break;
+	case 12:return -0.02f;
+		break;
+	case 13:return -0.06f;
+		break;
+	case 14:return -0.10f;
+		break;
+	case 15:return -0.14f;
+		break;
+	case 16:return -0.18f;
+		break;
+	case 17:return -0.22f;
+		break;
+	case 18:return -0.26f;
+		break;
+	case 19:return -0.30f;
+		break;
+	case 20:return -0.34f;
+		break;
+	case 21:return -0.38f;
+		break;
+	case 22:return -0.42f;
+		break;
+
+	};
+
+};
+
+float getXPosition() {
+	xPosition = rand() % 22 + 1;
+
+	switch (xPosition) {
+	case 1:return 0.42f;
+		break;
+	case 2:return 0.38f;
+		break;
+	case 3:return 0.34f;
+		break;
+	case 4:return 0.30f;
+		break;
+	case 5:return 0.26f;
+		break;
+	case 6:return 0.22f;
+		break;
+	case 7:return 0.18f;
+		break;
+	case 8:return 0.14f;
+		break;
+	case 9:return 0.10f;
+		break;
+	case 10:return 0.06f;
+		break;
+	case 11:return 0.02f;
+		break;
+	case 12:return -0.02f;
+		break;
+	case 13:return -0.06f;
+		break;
+	case 14:return -0.10f;
+		break;
+	case 15:return -0.14f;
+		break;
+	case 16:return -0.18f;
+		break;
+	case 17:return -0.22f;
+		break;
+	case 18:return -0.26f;
+		break;
+	case 19:return -0.30f;
+		break;
+	case 20:return -0.34f;
+		break;
+	case 21:return -0.38f;
+		break;
+	case 22:return -0.42f;
+		break;
+	};
 };
