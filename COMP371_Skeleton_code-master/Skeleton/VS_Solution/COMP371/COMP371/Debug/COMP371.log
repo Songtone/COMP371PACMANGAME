@@ -1,10 +1,10 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (COMP371_Lab3.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Main.cpp
-c:\users\seb\desktop\comp 371 a1 test\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(223): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\seb\desktop\comp 371 a1 test\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(223): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\seb\desktop\comp 371 a1 test\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(261): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\seb\desktop\comp 371 a1 test\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(261): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\seb\desktop\comp 371 a1 test\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(289): warning C4101: 'VBO_colors': unreferenced local variable
+c:\users\seb\desktop\comp 371 a1 pacman\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(255): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\seb\desktop\comp 371 a1 pacman\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(255): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\seb\desktop\comp 371 a1 pacman\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(293): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\seb\desktop\comp 371 a1 pacman\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(293): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\seb\desktop\comp 371 a1 pacman\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(321): warning C4101: 'VBO_colors': unreferenced local variable
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/FORCE' specification
-  COMP371.vcxproj -> C:\Users\Seb\Desktop\COMP 371 A1 TEST\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.exe
-  COMP371.vcxproj -> C:\Users\Seb\Desktop\COMP 371 A1 TEST\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.pdb (Partial PDB)
+  COMP371.vcxproj -> C:\Users\Seb\Desktop\COMP 371 A1 PACMAN\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.exe
+  COMP371.vcxproj -> C:\Users\Seb\Desktop\COMP 371 A1 PACMAN\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.pdb (Partial PDB)

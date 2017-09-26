@@ -35,6 +35,9 @@ float pacmanPosX = 0.0f;
 float pacmanPosY = 0.0f;
 float pacmanDirection = 0.0;
 
+float dotScale = 1.0f;
+
+
 float ROTATOR = 0.0f;
 
 
@@ -193,36 +196,36 @@ int main()
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
-	//std::vector<glm::vec3> vertices;
-	//std::vector<glm::vec3> normals;
-	//std::vector<glm::vec2> UVs;
-	//loadOBJ("sphere.obj", vertices, normals, UVs); //read the vertices from the sphere.obj file
+	std::vector<glm::vec3> verticesSphere;
+	std::vector<glm::vec3> normalsSphere;
+	std::vector<glm::vec2> UVsSphere;
+	loadOBJ("sphere.obj", verticesSphere, normalsSphere, UVsSphere); //read the vertices from the sphere.obj file
 
-	//GLuint VAO_sphere, VBO_sphere, EBO_sphere;
-	//glGenVertexArrays(1, &VAO_sphere);
-	//glGenBuffers(1, &VBO_sphere);
-	//glGenBuffers(1, &EBO_sphere);
-	//// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	//GLuint vertices_VBO_sphere, normals_VBO_sphere;
+	GLuint VAO_sphere, VBO_sphere, EBO_sphere;
+	glGenVertexArrays(1, &VAO_sphere);
+	glGenBuffers(1, &VBO_sphere);
+	glGenBuffers(1, &EBO_sphere);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	GLuint vertices_VBO_sphere, normals_VBO_sphere;
 
-	//glGenVertexArrays(1, &VAO_sphere);
-	//glGenBuffers(1, &vertices_VBO_sphere);
+	glGenVertexArrays(1, &VAO_sphere);
+	glGenBuffers(1, &vertices_VBO_sphere);
 
-	//// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	//glBindVertexArray(VAO_sphere);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO_sphere);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO_sphere);
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	//glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO_sphere);
+	glBufferData(GL_ARRAY_BUFFER, verticesSphere.size() * sizeof(glm::vec3), &verticesSphere.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
 
-	//glGenBuffers(1, &normals_VBO_sphere);
-	//glBindBuffer(GL_ARRAY_BUFFER, normals_VBO_sphere);
-	//glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals.front(), GL_STATIC_DRAW);
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	//glEnableVertexAttribArray(1);
+	glGenBuffers(1, &normals_VBO_sphere);
+	glBindBuffer(GL_ARRAY_BUFFER, normals_VBO_sphere);
+	glBufferData(GL_ARRAY_BUFFER, normalsSphere.size() * sizeof(glm::vec3), &normalsSphere.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	/*glBindVertexArray(0);*/
 	//grid horizontal lines
@@ -335,6 +338,7 @@ int main()
 
 
 	triangle_scale = glm::vec3(0.001f);
+	glm::vec3 dot_original_scale = glm::vec3(0.01f);
 
 	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
 	GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "view_matrix");
@@ -373,6 +377,8 @@ int main()
 		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(view_matrix));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
+
+		//The grid squares are 0.04 by 0.04 
 		//produces the horizontal lines
 		glBindVertexArray(VAO_horiLines);
 		glDrawArrays(GL_LINES, 0, 46);
@@ -391,21 +397,33 @@ int main()
 		
 		glm::vec3 pacmanPosition = { pacmanPosX, pacmanPosY, 0.0f };//define pacman original position
 		glm::mat4 model_pacman; //defines the model_matrix
-		glm::mat4 identity_matrix(1.0f);
-		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*triangle_scale);//scale object
+		glm::mat4 identity_matrix_pacman(1.0f);
+		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*triangle_scale);//scale pacman object
 		glm::mat4 pacmanTranslate = glm::translate(model_pacman, pacmanPosition);//translate pacman
 		glm::mat4 pacmanRotationY = glm::rotate(model_pacman,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));//rotate on Y
-		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix; // trans * scale* rot * identity
-		glm::mat4 pacmanLook = glm::rotate(model_pacman, glm::radians(pacmanDirection), glm::vec3(0.0f, 0.0f, 1.0f));
-		model_pacman = pacmanLook * identity_matrix;
+		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix_pacman; // trans * scale* rot * identity
+		glm::mat4 pacmanLook = glm::rotate(model_pacman, glm::radians(pacmanDirection), glm::vec3(0.0f, 0.0f, 1.0f));//will rotate where pacman looks at
+		model_pacman = pacmanLook * identity_matrix_pacman;
 
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_matrix to shader 
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
 		//rendering pacman
 		glBindVertexArray(VAO_pacman);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 		
 
+		glm::vec3 dotPosition = { 0.2f,0.4f,0.0f };
+		glm::mat4 model_dot;
+		glm::mat4 identity_matrix_dot(1.0f);
+		glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+		glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition);
+		model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+		//render the dots
+		glBindVertexArray(VAO_sphere);
+		glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+		glBindVertexArray(0);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -453,21 +471,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		pacmanScale -= 0.2f;
 	};
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		pacmanPosY += 0.04f;
-		pacmanDirection = 90;
+		if (pacmanPosY <= 0.36f) {
+			pacmanPosY += 0.04f;
+			pacmanDirection = 90;
+		};
 	};
 	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
-		pacmanPosY -= 0.04f;
-		pacmanDirection = 270;
+		if (pacmanPosY >= -0.36f) {
+			pacmanPosY -= 0.04f;
+			pacmanDirection = 270;
+		};
 	};
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-		pacmanPosX += 0.04f;
-		pacmanDirection = 0;
+		if (pacmanPosX <= 0.36f) {
+			pacmanPosX += 0.04f;
+			pacmanDirection = 0;
+		};
 	};
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-		pacmanPosX -= 0.04f;
-		pacmanDirection = 180;
-	}
+		if (pacmanPosY >= -0.36f) {
+			pacmanPosX -= 0.04f;
+			pacmanDirection = 180;
+		};
+	};
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
