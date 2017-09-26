@@ -215,6 +215,37 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	std::vector<glm::vec3> verticesTeapot;
+	std::vector<glm::vec3> normalsTeapot;
+	std::vector<glm::vec2> UVsTeapot;
+	loadOBJ("teapot.obj", verticesTeapot, normalsTeapot, UVsTeapot); //read the vertices from the pacman.obj file
+
+	GLuint VAO_teapot, VBO_teapot, EBO_teapot;
+	glGenVertexArrays(1, &VAO_teapot);
+	glGenBuffers(1, &VBO_teapot);
+	glGenBuffers(1, &EBO_teapot);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	GLuint vertices_VBO_teapot, normals_VBO_teapot;
+
+	glGenVertexArrays(1, &VAO_teapot);
+	glGenBuffers(1, &vertices_VBO_teapot);
+
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO_teapot);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO_teapot);
+	glBufferData(GL_ARRAY_BUFFER, verticesTeapot.size() * sizeof(glm::vec3), &verticesTeapot.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &normals_VBO_teapot);
+	glBindBuffer(GL_ARRAY_BUFFER, normals_VBO_teapot);
+	glBufferData(GL_ARRAY_BUFFER, normalsTeapot.size() * sizeof(glm::vec3), &normalsTeapot.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
 	
@@ -418,12 +449,13 @@ int main()
 		glBindVertexArray(0);
 		
 
-		//pacman section
+		//pacman and teapot section
 		glUniform1i(object_type_loc, 3);
-		glm::vec3 pacmanPosition = { pacmanPosX, pacmanPosY, 0.0f };//define pacman original position
+		glm::vec3 pacmanPosition = { pacmanPosX, pacmanPosY, 0.0f };//define pacman/teapot original position
 		glm::mat4 model_pacman; //defines the model_matrix
 		glm::mat4 identity_matrix_pacman(1.0f);
-		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
+		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*20.0f*pacman_original_scale);//teapot scale
+		//glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
 		glm::mat4 pacmanTranslate = glm::translate(model_pacman, pacmanPosition);//translate pacman
 		glm::mat4 pacmanRotationY = glm::rotate(model_pacman,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));//rotate on Y
 		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix_pacman; // trans * scale* rot * identity
@@ -432,9 +464,12 @@ int main()
 		
 		
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
+		//render teapot
+		glBindVertexArray(VAO_teapot);
+		glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
 		//rendering pacman
-		glBindVertexArray(VAO_pacman);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		//glBindVertexArray(VAO_pacman);
+		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 		
 		//begin of dost section

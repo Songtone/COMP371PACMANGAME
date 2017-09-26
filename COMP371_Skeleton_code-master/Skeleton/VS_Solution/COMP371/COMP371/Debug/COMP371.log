@@ -1,12 +1,12 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (COMP371_Lab3.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Main.cpp
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(284): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(284): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(322): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(322): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(343): warning C4101: 'VBO_colors': unreferenced local variable
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(744): warning C4715: 'getYPosition': not all control paths return a value
-c:\users\songt\desktop\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(796): warning C4715: 'getXPosition': not all control paths return a value
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(315): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(315): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(353): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(353): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(374): warning C4101: 'VBO_colors': unreferenced local variable
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(778): warning C4715: 'getYPosition': not all control paths return a value
+c:\users\seb\desktop\comp371 pacman show\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(830): warning C4715: 'getXPosition': not all control paths return a value
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/FORCE' specification
-  COMP371.vcxproj -> C:\Users\songt\Desktop\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.exe
-  COMP371.vcxproj -> C:\Users\songt\Desktop\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.pdb (Partial PDB)
+  COMP371.vcxproj -> C:\Users\Seb\Desktop\comp371 pacman show\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.exe
+  COMP371.vcxproj -> C:\Users\Seb\Desktop\comp371 pacman show\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.pdb (Partial PDB)
