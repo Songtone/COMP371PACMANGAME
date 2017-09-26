@@ -2,7 +2,7 @@
 //modified from http://learnopengl.com/
 
 #include "stdafx.h"
-
+#include <time.h>
 #include "..\glew\glew.h"	// include GL Extension Wrangler
 #include "..\glfw\glfw3.h"	// include GLFW helper library
 #include <stdio.h>
@@ -30,24 +30,26 @@ float cameraX = 0.0f;
 float cameraZ = 1.0f;
 float radius = 5.0f;
 
-float getXPosition();
-float getYPosition();
 
 float pacmanScale = 1.0f;
-float pacmanPosX = getXPosition();
-float pacmanPosY = getYPosition();
+float pacmanPosX = 0.02f;
+float pacmanPosY = 0.02f;
 float pacmanDirection = 0.0;
 
 float dotScale = 1.0f;
-float dotPosX = getXPosition();
-float dotPosY = getYPosition();
+float dotPosX = 0.1f;
+float dotPosY = 0.02f;
 
 
 float ROTATOR = 0.0f;
 
+float getPacmanXPosition();
+float getPacmanYPosition();
 
 int yPosition; //for random numbers
 int xPosition; //for random numbers
+
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -449,70 +451,75 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	std::cout << key << std::endl;
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	};
+	}
 	if (key == GLFW_KEY_F && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	};
+	}
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-	};
+	}
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
 		//cameraX = cameraX + 0.5f;
 		//cameraX += radius;
 		//cameraZ = cos(glfwGetTime())*radius;
 	
-	};
+	}
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 		//cameraX -= radius;
 		//cameraZ = -cos(glfwGetTime())*radius;
 		
-	};
+	}
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
 		cameraZ = cameraZ - 0.5f;
-	};
+	}
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 		cameraZ = cameraZ + 0.5f;
-	};
+	}
 	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
 		pacmanScale += 0.2f;
 		dotScale += 0.2f;
-	};
+	}
 	if (key == GLFW_KEY_J && action == GLFW_PRESS) {//scale down the objects
 		pacmanScale -= 0.2f;
 		dotScale -= 0.2f;
-	};
+	}
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
 		if (pacmanPosY <= 0.4f) {
 			pacmanPosY += 0.04f;
 			pacmanDirection = 90;
-		};
-		cout << pacmanPosY << endl;
-	};
+		}
+	}
 	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
 		if (pacmanPosY >= -0.4f) {
 			pacmanPosY -= 0.04f;
 			pacmanDirection = 270;
-		};
-	};
+		}
+	}
 	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
 		if (pacmanPosX <= 0.4f) {
 			pacmanPosX += 0.04f;
 			pacmanDirection = 0;
-		};
-	};
+		}
+	}
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
 		if (pacmanPosX >= -0.4f) {
 			pacmanPosX -= 0.04f;
 			pacmanDirection = 180;
-		};
-	};
-};
+		}
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		pacmanPosX = getPacmanXPosition();
+		pacmanPosY = getPacmanYPosition();
+	}
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
-};
+}
 
-float getYPosition() {
+
+float getPacmanYPosition() {
+	
 	yPosition = rand() % 22 + 1;
 
 	switch (yPosition) {
@@ -561,11 +568,12 @@ float getYPosition() {
 	case 22:return -0.42f;
 		break;
 
-	};
+	}
 
-};
+}
 
-float getXPosition() {
+float getPacmanXPosition() {
+	
 	xPosition = rand() % 22 + 1;
 
 	switch (xPosition) {
@@ -613,5 +621,5 @@ float getXPosition() {
 		break;
 	case 22:return -0.42f;
 		break;
-	};
-};
+	}
+}
