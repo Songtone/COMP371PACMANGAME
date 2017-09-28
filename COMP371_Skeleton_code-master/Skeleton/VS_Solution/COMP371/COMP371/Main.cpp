@@ -410,6 +410,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Constant vectors
+		//glm::vec3 center(pacmanPosX, pacmanPosY, 0.0f);//camera focuses on pacman
+		//glm::vec3 up(pacmanPosX, 1.0f, 0.0f);//camera focuses on pacman
 		glm::vec3 center(0.0f, 0.0f, 0.0f);
 		glm::vec3 up(0.0f, 1.0f, 0.0f);
 		glm::vec3 eye(cameraX, 0.0f, cameraZ);
@@ -433,13 +435,13 @@ int main()
 		//produces the horizontal lines
 		glUniform1i(object_type_loc, 0);
 		glBindVertexArray(VAO_horiLines);
-		glDrawArrays(GL_LINES, 0, 46);
+		glDrawArrays(GL_LINES, 0, 44);
 		glBindVertexArray(0);
 
 		//produces the vertical lines
 		glUniform1i(object_type_loc, 0);
 		glBindVertexArray(VAO_vertLines);
-		glDrawArrays(GL_LINES, 0, 46);
+		glDrawArrays(GL_LINES, 0, 44);
 		glBindVertexArray(0);
 
 		glUniform1i(object_type_loc, 2);
@@ -454,8 +456,8 @@ int main()
 		glm::vec3 pacmanPosition = { pacmanPosX, pacmanPosY, 0.0f };//define pacman/teapot original position
 		glm::mat4 model_pacman; //defines the model_matrix
 		glm::mat4 identity_matrix_pacman(1.0f);
-		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*20.0f*pacman_original_scale);//teapot scale
-		//glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
+		//glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*20.0f*pacman_original_scale);//teapot scale
+		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
 		glm::mat4 pacmanTranslate = glm::translate(model_pacman, pacmanPosition);//translate pacman
 		glm::mat4 pacmanRotationY = glm::rotate(model_pacman,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));//rotate on Y
 		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix_pacman; // trans * scale* rot * identity
@@ -465,11 +467,11 @@ int main()
 		
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
 		//render teapot
-		glBindVertexArray(VAO_teapot);
-		glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
+		//glBindVertexArray(VAO_teapot);
+		//glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
 		//rendering pacman
-		//glBindVertexArray(VAO_pacman);
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glBindVertexArray(VAO_pacman);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 		
 		//begin of dost section
@@ -479,7 +481,7 @@ int main()
 				 rangeY = dotPosition[0].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten0 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -504,7 +506,7 @@ int main()
 				rangeY = dotPosition[1].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten1 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -529,7 +531,7 @@ int main()
 				rangeY = dotPosition[2].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten2 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -554,7 +556,7 @@ int main()
 				rangeY = dotPosition[3].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten3 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -579,7 +581,7 @@ int main()
 				rangeY = dotPosition[4].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten4 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -603,7 +605,7 @@ int main()
 				rangeY = dotPosition[5].y - pacmanPosition.y;
 				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
 					dotNotEaten5 = false;
-					cout << "hey" << endl;
+					
 				}
 				else {
 					glUniform1i(object_type_loc, 1);
@@ -625,6 +627,7 @@ int main()
 			}
 			//This will check if all the dots have been eaten, if yes then the game will reset itself
 			if (dotNotEaten0 == false && dotNotEaten1 == false && dotNotEaten2 == false && dotNotEaten3 == false && dotNotEaten4 == false && dotNotEaten5 == false) {
+				cout << "You Win!" << endl;
 				resetGame();
 			}
 
@@ -654,19 +657,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraX = cameraX + 0.05f;
 		//cameraX += radius;
 		//cameraZ = cos(glfwGetTime())*radius;
-	
+
 	}
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 		cameraX = cameraX - 0.05f;
 		//cameraX -= radius;
 		//cameraZ = -cos(glfwGetTime())*radius;
-		
+
 	}
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-		cameraZ = cameraZ - 0.5f;
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {//move the camera closer to the grid
+		if (cameraZ <= 0.05f) {
+			cout << "TOO FAR" << endl;
+		}
+		else{
+			cameraZ = cameraZ - 0.05f;
 	}
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-		cameraZ = cameraZ + 0.5f;
+
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {//move the camera further from the grid
+		cameraZ = cameraZ + 0.05f;
 	}
 	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
 		pacmanScale += 0.2f;
@@ -706,6 +715,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.0f, 100.0f);
 	glViewport(0, 0, width, height);
 }
 
