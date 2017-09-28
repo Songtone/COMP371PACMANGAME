@@ -625,6 +625,8 @@ int main()
 
 				}
 			}
+
+
 			//This will check if all the dots have been eaten, if yes then the game will reset itself
 			if (dotNotEaten0 == false && dotNotEaten1 == false && dotNotEaten2 == false && dotNotEaten3 == false && dotNotEaten4 == false && dotNotEaten5 == false) {
 				cout << "You Win!" << endl;
@@ -710,7 +712,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 	}
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {//pressing spacebar will reset the game
-		resetGame();
+		pacmanPosX = getXPosition();
+		pacmanPosY = getYPosition();
 	}
 }
 
