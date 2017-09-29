@@ -48,7 +48,13 @@ bool dotNotEaten5 = true;
 float dotScale = 1.0f;
 //float dotPosX = 0.1f;
 //float dotPosY = 0.02f;
-glm::vec3 dotPosition[9];
+glm::vec3 dotPosition[6];
+
+
+float ghostScale = 1.0f;
+float ghostPositionX = 0.22f;
+float ghostPositionY = 0.06f;
+glm::vec3 ghostPosition[4];
 
 float ROTATOR = 0.0f;
 
@@ -287,6 +293,47 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+	std::vector<glm::vec3> verticesCube;
+	std::vector<glm::vec3> normalsCube;
+	std::vector<glm::vec2> UVsCube;
+	loadOBJ("cube.obj", verticesCube, normalsCube, UVsCube); //read the vertices from the sphere.obj file
+
+
+	//for (int i = 0; i <= 5; i++) {//this will create random positions for the food
+	//	dotPosition[i] = { getXPosition(),getYPosition(),0.0f };
+
+	//}
+
+
+	GLuint VAO_cube, VBO_cube, EBO_cube;
+	glGenVertexArrays(1, &VAO_cube);
+	glGenBuffers(1, &VBO_cube);
+	glGenBuffers(1, &EBO_cube);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	GLuint vertices_VBO_cube, normals_VBO_cube;
+
+	glGenVertexArrays(1, &VAO_cube);
+	glGenBuffers(1, &vertices_VBO_cube);
+
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO_cube);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO_cube);
+	glBufferData(GL_ARRAY_BUFFER, verticesCube.size() * sizeof(glm::vec3), &verticesCube.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &normals_VBO_cube);
+	glBindBuffer(GL_ARRAY_BUFFER, normals_VBO_cube);
+	glBufferData(GL_ARRAY_BUFFER, normalsCube.size() * sizeof(glm::vec3), &normalsCube.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+
 	/*glBindVertexArray(0);*/
 	//grid horizontal lines
 	float gridHorizontalLines[]{
@@ -389,6 +436,9 @@ int main()
 	triangle_scale = glm::vec3(0.001f);
 	glm::vec3 pacman_original_scale = glm::vec3(0.001f);
 	glm::vec3 dot_original_scale = glm::vec3(0.01f);
+	glm::vec3 ghost_original_scale = glm::vec3(0.01f);
+
+	glm::vec3 ghostPosition = { ghostPositionX,ghostPositionY,0.0f };
 
 	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
 	GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "view_matrix");
@@ -632,7 +682,38 @@ int main()
 				cout << "You Win!" << endl;
 				resetGame();
 			}
+			
 
+			//if (ghostPositionX < pacmanPosX) {
+			//	ghostPositionX = ghostPositionX + 0.04f;
+			//}
+			//else if (ghostPositionX > pacmanPosX) {
+			//	ghostPositionX = ghostPositionX - 0.04f;
+			//}
+			//else {
+			//	cout << "same spot" << endl;
+			//}
+			//if (ghostPositionY < pacmanPosY) {
+			//	ghostPositionY = ghostPositionY + 0.04f;
+			//}
+			//else if (ghostPositionY > pacmanPosY) {
+			//	ghostPositionY = ghostPositionY - 0.04f;
+			//}
+			//else {
+			//	cout << "same spot" << endl;
+			//}
+			//glm::mat4 model_ghost;
+			//glm::mat4 identity_matrix_dot(1.0f);
+			//glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
+			//glm::mat4 ghostTranslate = glm::translate(model_ghost, { ghostPositionX,ghostPositionY, 0.0f });
+			//model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+
+			//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
+			//																		  //render the dots
+			//glBindVertexArray(VAO_cube);
+			//glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+			//glBindVertexArray(0);
+		
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
@@ -714,6 +795,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {//pressing spacebar will reset the game
 		pacmanPosX = getXPosition();
 		pacmanPosY = getYPosition();
+	}
+	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+		resetGame();
 	}
 }
 
