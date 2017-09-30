@@ -54,6 +54,8 @@ glm::vec3 dotPosition[6];
 float ghostScale = 1.0f;
 float ghostPositionX = 0.22f;
 float ghostPositionY = 0.06f;
+
+int ghostMovement = 0;
 glm::vec3 ghostPosition[4];
 
 float ROTATOR = 0.0f;
@@ -69,7 +71,7 @@ float rangeY;
 
 void resetGame();//function to reset the game
 
-// The MAIN function, from here we start the application and run the game loop
+				 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
@@ -111,7 +113,7 @@ int main()
 
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.0f, 100.0f);
 
-	
+
 	// Build and compile our shader program
 	// Vertex shader
 
@@ -133,7 +135,7 @@ int main()
 	}
 
 	// Read the Fragment Shader code from the file
-	string fragment_shader_path = "fragment.shader";
+	string fragment_shader_path = "fragment.shader.shader";
 	std::string FragmentShaderCode;
 	std::ifstream FragmentShaderStream(fragment_shader_path, std::ios::in);
 
@@ -190,12 +192,13 @@ int main()
 
 	glUseProgram(shaderProgram);
 
+	//pacman object
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
 	loadOBJ("pacman.obj", vertices, normals, UVs); //read the vertices from the pacman.obj file
 
-	GLuint VAO_pacman, VBO_pacman,EBO_pacman;
+	GLuint VAO_pacman, VBO_pacman, EBO_pacman;
 	glGenVertexArrays(1, &VAO_pacman);
 	glGenBuffers(1, &VBO_pacman);
 	glGenBuffers(1, &EBO_pacman);
@@ -220,7 +223,7 @@ int main()
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	//the teapot object
 	std::vector<glm::vec3> verticesTeapot;
 	std::vector<glm::vec3> normalsTeapot;
 	std::vector<glm::vec2> UVsTeapot;
@@ -254,7 +257,7 @@ int main()
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
-	
+						  //start of the sphere objects
 	std::vector<glm::vec3> verticesSphere;
 	std::vector<glm::vec3> normalsSphere;
 	std::vector<glm::vec2> UVsSphere;
@@ -263,7 +266,7 @@ int main()
 
 	for (int i = 0; i <= 5; i++) {//this will create random positions for the food
 		dotPosition[i] = { getXPosition(),getYPosition(),0.0f };
-		
+
 	}
 
 
@@ -300,10 +303,10 @@ int main()
 	loadOBJ("cube.obj", verticesCube, normalsCube, UVsCube); //read the vertices from the sphere.obj file
 
 
-	//for (int i = 0; i <= 5; i++) {//this will create random positions for the food
-	//	dotPosition[i] = { getXPosition(),getYPosition(),0.0f };
+	for (int i = 0; i <= 3; i++) {//this will create random positions for the ghosts
+		ghostPosition[i] = { getXPosition(),getYPosition(),0.0f };
 
-	//}
+	}
 
 
 	GLuint VAO_cube, VBO_cube, EBO_cube;
@@ -395,7 +398,7 @@ int main()
 		-1.9,-2.1,0, -1.9,2.1,0,
 		2.1,-2.1,0, 2.1,2.1,0,
 		-2.1,-2.1,0, -2.1,2.1,0,
-		
+
 
 	};
 
@@ -416,9 +419,9 @@ int main()
 		0,0,0, 0,1,0,
 		0,0,0, 0,0,1
 	};
-	
 
-	GLuint VBO_axis, VBO_colors,VAO_axis;
+
+	GLuint VBO_axis, VBO_colors, VAO_axis;
 	glGenVertexArrays(1, &VAO_axis);
 	glBindVertexArray(VAO_axis);
 
@@ -428,7 +431,7 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	
+
 
 	glBindVertexArray(0);
 
@@ -438,14 +441,14 @@ int main()
 	glm::vec3 dot_original_scale = glm::vec3(0.01f);
 	glm::vec3 ghost_original_scale = glm::vec3(0.01f);
 
-	glm::vec3 ghostPosition = { ghostPositionX,ghostPositionY,0.0f };
+
 
 	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
 	GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "view_matrix");
 	GLuint transformLoc = glGetUniformLocation(shaderProgram, "model_matrix");
 
 	GLuint transformLoc1 = glGetUniformLocation(shaderProgram, "trimodel");
-	
+
 	GLuint object_type_loc = glGetUniformLocation(shaderProgram, "object_type");
 
 	// Game loop
@@ -467,7 +470,7 @@ int main()
 		glm::vec3 eye(cameraX, 0.0f, cameraZ);
 
 		//glm::mat4 r_m = glm::rotate(glm::mat4(1.0f), ROTATOR, glm::vec3(0, 1, 0))
-			//eye + center normalize
+		//eye + center normalize
 
 
 		glm::mat4 view_matrix;
@@ -480,7 +483,7 @@ int main()
 		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(view_matrix));
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
-		
+
 		//The grid squares are 0.04 by 0.04 
 		//produces the horizontal lines
 		glUniform1i(object_type_loc, 0);
@@ -499,7 +502,7 @@ int main()
 		glBindVertexArray(VAO_axis);
 		glDrawArrays(GL_LINES, 0, 6);
 		glBindVertexArray(0);
-		
+
 
 		//pacman and teapot section
 		glUniform1i(object_type_loc, 3);
@@ -509,211 +512,268 @@ int main()
 		//glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*20.0f*pacman_original_scale);//teapot scale
 		glm::mat4 pacmanScaled = glm::scale(model_pacman, pacmanScale*pacman_original_scale);//scale pacman object
 		glm::mat4 pacmanTranslate = glm::translate(model_pacman, pacmanPosition);//translate pacman
-		glm::mat4 pacmanRotationY = glm::rotate(model_pacman,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));//rotate on Y
+		glm::mat4 pacmanRotationY = glm::rotate(model_pacman, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));//rotate on Y
 		model_pacman = pacmanTranslate * pacmanScaled * pacmanRotationY * identity_matrix_pacman; // trans * scale* rot * identity
 		glm::mat4 pacmanLook = glm::rotate(model_pacman, glm::radians(pacmanDirection), glm::vec3(0.0f, 0.0f, 1.0f));//will rotate where pacman looks at
 		model_pacman = pacmanLook * identity_matrix_pacman;
-		
-		
+
+
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
-		//render teapot
-		//glBindVertexArray(VAO_teapot);
-		//glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
-		//rendering pacman
+																					 //render teapot
+																					 //glBindVertexArray(VAO_teapot);
+																					 //glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
+																					 //rendering pacman
 		glBindVertexArray(VAO_pacman);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
-		
-		//begin of dost section
-		
-			if (dotNotEaten0 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				 rangeX = dotPosition[0].x - pacmanPosition.x;
-				 rangeY = dotPosition[0].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten0 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[0]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
 
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-					//render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
+		//begin of dots section
 
-				
+		if (dotNotEaten0 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[0].x - pacmanPosition.x;
+			rangeY = dotPosition[0].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten0 = false;
+
+			}
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[0]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
+
+
 			}
 		}
-			if (dotNotEaten1 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				rangeX = dotPosition[1].x - pacmanPosition.x;
-				rangeY = dotPosition[1].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten1 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[1]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+		if (dotNotEaten1 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[1].x - pacmanPosition.x;
+			rangeY = dotPosition[1].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten1 = false;
 
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-																							  //render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
-
-
-				}
 			}
-			if (dotNotEaten2 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				rangeX = dotPosition[2].x - pacmanPosition.x;
-				rangeY = dotPosition[2].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten2 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[2]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[1]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
 
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-																							  //render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
 
 
-				}
 			}
-			if (dotNotEaten3 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				rangeX = dotPosition[3].x - pacmanPosition.x;
-				rangeY = dotPosition[3].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten3 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[3]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+		}
+		if (dotNotEaten2 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[2].x - pacmanPosition.x;
+			rangeY = dotPosition[2].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten2 = false;
 
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-																							  //render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
-
-
-				}
 			}
-			if (dotNotEaten4 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				rangeX = dotPosition[4].x - pacmanPosition.x;
-				rangeY = dotPosition[4].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten4 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[4]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[2]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
 
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-																							  //render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
 
 
-				}
-			}if (dotNotEaten5 == true) {//if not true, that means the dot has been eaten and will no longer appear
-				rangeX = dotPosition[5].x - pacmanPosition.x;
-				rangeY = dotPosition[5].y - pacmanPosition.y;
-				if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
-					dotNotEaten5 = false;
-					
-				}
-				else {
-					glUniform1i(object_type_loc, 1);
-					//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
-					glm::mat4 model_dot;
-					glm::mat4 identity_matrix_dot(1.0f);
-					glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
-					glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[5]);
-					model_dot = dotTranslate * dotScaled *identity_matrix_dot;
-
-					glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
-																							  //render the dots
-					glBindVertexArray(VAO_sphere);
-					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
-					glBindVertexArray(0);
-
-
-				}
 			}
+		}
+		if (dotNotEaten3 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[3].x - pacmanPosition.x;
+			rangeY = dotPosition[3].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten3 = false;
+
+			}
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[3]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
 
 
-			//This will check if all the dots have been eaten, if yes then the game will reset itself
-			if (dotNotEaten0 == false && dotNotEaten1 == false && dotNotEaten2 == false && dotNotEaten3 == false && dotNotEaten4 == false && dotNotEaten5 == false) {
-				cout << "You Win!" << endl;
+			}
+		}
+		if (dotNotEaten4 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[4].x - pacmanPosition.x;
+			rangeY = dotPosition[4].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten4 = false;
+
+			}
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[4]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
+
+
+			}
+		}if (dotNotEaten5 == true) {//if not true, that means the dot has been eaten and will no longer appear
+			rangeX = dotPosition[5].x - pacmanPosition.x;
+			rangeY = dotPosition[5].y - pacmanPosition.y;
+			if (abs(rangeX) < 0.001f && abs(rangeY) < 0.001f) {
+				dotNotEaten5 = false;
+
+			}
+			else {
+				glUniform1i(object_type_loc, 1);
+				//glm::vec3 dotPosition = { dotPosX,dotPosY,0.0f };
+				glm::mat4 model_dot;
+				glm::mat4 identity_matrix_dot(1.0f);
+				glm::mat4 dotScaled = glm::scale(model_dot, dotScale*dot_original_scale);//scale dot object
+				glm::mat4 dotTranslate = glm::translate(model_dot, dotPosition[5]);
+				model_dot = dotTranslate * dotScaled *identity_matrix_dot;
+
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
+																						  //render the dots
+				glBindVertexArray(VAO_sphere);
+				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				glBindVertexArray(0);
+
+
+			}
+		}
+
+
+		//This will check if all the dots have been eaten, if yes then the game will reset itself
+		if (dotNotEaten0 == false && dotNotEaten1 == false && dotNotEaten2 == false && dotNotEaten3 == false && dotNotEaten4 == false && dotNotEaten5 == false) {
+			cout << "You Win!" << endl;
+			resetGame();
+		}
+
+		//ghost starts here
+
+		//ghost number 1
+		//ghost movement
+		if (ghostMovement == 105) {
+			if (abs(ghostPosition[0].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[0].y - pacmanPosY) < 0.0000001f) {
 				resetGame();
 			}
-			
+			else if (abs(ghostPosition[0].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[0].y - pacmanPosY) > 0.000000001f) {
+				if (abs(ghostPosition[0].x - pacmanPosX) > abs(ghostPosition[0].y - pacmanPosY)) {
+					if (ghostPosition[0].x < pacmanPosX) {
+						ghostPosition[0].x = ghostPosition[0].x + 0.04f;
+					}
+					else if (ghostPosition[0].x > pacmanPosX) {
+						ghostPosition[0].x = ghostPosition[0].x - 0.04f;
+					}
 
-			//if (ghostPositionX < pacmanPosX) {
-			//	ghostPositionX = ghostPositionX + 0.04f;
-			//}
-			//else if (ghostPositionX > pacmanPosX) {
-			//	ghostPositionX = ghostPositionX - 0.04f;
-			//}
-			//else {
-			//	cout << "same spot" << endl;
-			//}
-			//if (ghostPositionY < pacmanPosY) {
-			//	ghostPositionY = ghostPositionY + 0.04f;
-			//}
-			//else if (ghostPositionY > pacmanPosY) {
-			//	ghostPositionY = ghostPositionY - 0.04f;
-			//}
-			//else {
-			//	cout << "same spot" << endl;
-			//}
-			//glm::mat4 model_ghost;
-			//glm::mat4 identity_matrix_dot(1.0f);
-			//glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
-			//glm::mat4 ghostTranslate = glm::translate(model_ghost, { ghostPositionX,ghostPositionY, 0.0f });
-			//model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+				}
+				else {
+					if (ghostPosition[0].y < pacmanPosY) {
+						ghostPosition[0].y = ghostPosition[0].y + 0.04f;
+					}
+					else if (ghostPosition[0].y > pacmanPosY) {
+						ghostPosition[0].y = ghostPosition[0].y - 0.04f;
+					}
+				}
+			}
 
-			//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
-			//																		  //render the dots
-			//glBindVertexArray(VAO_cube);
-			//glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
-			//glBindVertexArray(0);
-		
+
+			ghostMovement = 0;
+		}
+		ghostMovement++;
+		//ghost rendering
+		glm::mat4 model_ghost;
+		glm::mat4 identity_matrix_dot(1.0f);
+		glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
+		glm::mat4 ghostTranslate = glm::translate(model_ghost, ghostPosition[0]);
+		model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
+																					//render the dots
+		glBindVertexArray(VAO_cube);
+		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		glBindVertexArray(0);
+
+
+		//ghost number 2
+		//if (ghostMovement == 105) {
+		//	if (abs(ghostPosition[1].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[1].y - pacmanPosY) < 0.0000001f) {
+		//		resetGame();
+		//	}
+		//	else if (abs(ghostPosition[1].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[1].y - pacmanPosY) > 0.000000001f) {
+		//		if (abs(ghostPosition[1].x - pacmanPosX) > abs(ghostPosition[1].y - pacmanPosY)) {
+		//			if (ghostPosition[1].x < pacmanPosX) {
+		//				ghostPosition[1].x = ghostPosition[1].x + 0.04f;
+		//			}
+		//			else if (ghostPosition[1].x > pacmanPosX) {
+		//				ghostPosition[1].x = ghostPosition[1].x - 0.04f;
+		//			}
+
+		//		}
+		//		else {
+		//			if (ghostPosition[1].y < pacmanPosY) {
+		//				ghostPosition[1].y = ghostPosition[1].y + 0.04f;
+		//			}
+		//			else if (ghostPosition[1].y > pacmanPosY) {
+		//				ghostPosition[1].y = ghostPosition[1].y - 0.04f;
+		//			}
+		//		}
+		//	}
+
+
+		//	ghostMovement = 0;
+		//}
+		//ghostMovement++;
+		////ghost rendering
+		//glm::mat4 model_ghost;
+		//glm::mat4 identity_matrix_dot(1.0f);
+		//glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
+		//glm::mat4 ghostTranslate = glm::translate(model_ghost, ghostPosition[1]);
+		//model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+
+		//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
+		//																			//render the dots
+		//glBindVertexArray(VAO_cube);
+		//glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		//glBindVertexArray(0);
+
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
@@ -752,9 +812,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (cameraZ <= 0.05f) {
 			cout << "TOO FAR" << endl;
 		}
-		else{
+		else {
 			cameraZ = cameraZ - 0.05f;
-	}
+		}
 
 	}
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {//move the camera further from the grid
@@ -763,10 +823,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
 		pacmanScale += 0.2f;
 		dotScale += 0.2f;
+		ghostScale += 0.2f;
 	}
 	if (key == GLFW_KEY_J && action == GLFW_PRESS) {//scale down the objects
 		pacmanScale -= 0.2f;
 		dotScale -= 0.2f;
+		ghostScale -= 0.2f;
 	}
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {//moving pacman on upwards on the Y axis using W
 		if (pacmanPosY <= 0.4f) {
@@ -807,6 +869,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void resetGame() {
+	ghostMovement = 0;
 	pacmanPosX = getXPosition();
 	pacmanPosY = getYPosition();
 	for (int i = 0; i <= 5; i++) {//this will create random positions for the food
@@ -822,7 +885,7 @@ void resetGame() {
 }
 
 float getYPosition() {//will get a random position on the Y axis
-	
+
 	yPosition = rand() % 22 + 1;
 
 	switch (yPosition) {
@@ -876,7 +939,7 @@ float getYPosition() {//will get a random position on the Y axis
 }
 
 float getXPosition() {//will get a random position on the X axis
-	
+
 	xPosition = rand() % 22 + 1;
 
 	switch (xPosition) {
