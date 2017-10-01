@@ -5,16 +5,16 @@ c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-m
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(422): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(422): warning C4305: 'initializing': truncation from 'double' to 'float'
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(443): warning C4101: 'VBO_colors': unreferenced local variable
+c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1094): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1095): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1096): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1104): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1105): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1106): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1107): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1108): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1149): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1150): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1151): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1275): warning C4715: 'getYPosition': not all control paths return a value
-c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1327): warning C4715: 'getXPosition': not all control paths return a value
+c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1269): warning C4715: 'getYPosition': not all control paths return a value
+c:\users\songt\desktop\comp345a1pacman\comp371pacmangame\comp371_skeleton_code-master\skeleton\vs_solution\comp371\comp371\main.cpp(1321): warning C4715: 'getXPosition': not all control paths return a value
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/FORCE' specification
   COMP371.vcxproj -> C:\Users\songt\Desktop\comp345A1Pacman\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.exe
   COMP371.vcxproj -> C:\Users\songt\Desktop\comp345A1Pacman\COMP371PACMANGAME\COMP371_Skeleton_code-master\Skeleton\VS_Solution\COMP371\Debug\COMP371.pdb (Partial PDB)

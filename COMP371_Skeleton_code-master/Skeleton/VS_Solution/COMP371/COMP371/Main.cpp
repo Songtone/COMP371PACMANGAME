@@ -86,7 +86,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void cursor_callback(GLFWwindow* window, double xpos, double ypos);
 void resetGame();//function to reset the game
-void resetCamera();//reset the camera settings
+
 
 				 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -1038,10 +1038,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			cameraZ = cameraZ + 0.02f;
 		}
 	}
-	if (key == GLFW_KEY_HOME && action == GLFW_PRESS) {//move the camera further from the grid
+	if (key == GLFW_KEY_HOME && action == GLFW_PRESS) {//reset the orientation and the position of the world
+			panning = 0.0f;
 			cameraX = 0.0f;
 			cameraY = 0.0f;
-			cameraZ =1.0f;
+			cameraZ = 1.0f;
 	}
 
 	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
@@ -1085,9 +1086,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		resetGame();
 	}
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
-		resetCamera();
-	}
+	
 }
 
 void cursor_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -1212,12 +1211,7 @@ void resetGame() {
 
 	}
 }
-void resetCamera() {
-	panning = 0.0f;
-	cameraX = 0.0f;
-	cameraY = 0.0f;
-	cameraZ = 1.0f;
-}
+
 
 
 float getYPosition() {//will get a random position on the Y axis
