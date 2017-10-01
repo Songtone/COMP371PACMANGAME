@@ -86,6 +86,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void cursor_callback(GLFWwindow* window, double xpos, double ypos);
 void resetGame();//function to reset the game
+void resetCamera();//reset the camera settings
 
 				 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -1084,6 +1085,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		resetGame();
 	}
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+		resetCamera();
+	}
 }
 
 void cursor_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -1190,10 +1194,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 //this function will reset the game. Resets dot position, pacman position, camera position, grid position
 void resetGame() {
-	panning = 0.0f;
-	cameraX = 0.0f;
-	cameraY = 0.0f;
-	cameraZ = 1.0f;
+	
 	ghostMovement1 = 0;
 	ghostMovement2 = 0;
 	ghostMovement3 = 0;
@@ -1210,6 +1211,12 @@ void resetGame() {
 		dotNotEaten5 = true;
 
 	}
+}
+void resetCamera() {
+	panning = 0.0f;
+	cameraX = 0.0f;
+	cameraY = 0.0f;
+	cameraZ = 1.0f;
 }
 
 
