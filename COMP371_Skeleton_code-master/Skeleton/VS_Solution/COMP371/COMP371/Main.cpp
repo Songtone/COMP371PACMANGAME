@@ -46,16 +46,14 @@ bool dotNotEaten3 = true;
 bool dotNotEaten4 = true;
 bool dotNotEaten5 = true;
 float dotScale = 1.0f;
-//float dotPosX = 0.1f;
-//float dotPosY = 0.02f;
 glm::vec3 dotPosition[6];
 
 
-float ghostScale = 1.0f;
-float ghostPositionX = 0.22f;
-float ghostPositionY = 0.06f;
-
-int ghostMovement = 0;
+float ghostScale = 1.0f;//scale for the ghost
+int ghostMovement1 = 0;//initializing the original movement of ghost counter
+int ghostMovement2 = 0;
+int ghostMovement3 = 0;
+int ghostMovement4 = 0;
 glm::vec3 ghostPosition[4];
 
 float ROTATOR = 0.0f;
@@ -459,7 +457,7 @@ int main()
 
 		// Render
 		// Clear the colorbuffer
-		glClearColor(0.4f, 0.1f, 0.3f, 1.0f);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Constant vectors
@@ -519,10 +517,10 @@ int main()
 
 
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_pacman)); //pass model_pacman to shader 
-																					 //render teapot
-																					 //glBindVertexArray(VAO_teapot);
-																					 //glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
-																					 //rendering pacman
+								 //render teapot
+		 //glBindVertexArray(VAO_teapot);
+		 //glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
+								//rendering pacman
 		glBindVertexArray(VAO_pacman);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
@@ -686,13 +684,12 @@ int main()
 			resetGame();
 		}
 
-		//ghost starts here
-
+															//ghost starts here
+		
 		//ghost number 1
-		//ghost movement
-		if (ghostMovement == 105) {
+		if (ghostMovement1 == 10) {//to control the speed of the ghosts
 			if (abs(ghostPosition[0].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[0].y - pacmanPosY) < 0.0000001f) {
-				resetGame();
+				resetGame();//once the ghost touches pacman, the game will restart
 			}
 			else if (abs(ghostPosition[0].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[0].y - pacmanPosY) > 0.000000001f) {
 				if (abs(ghostPosition[0].x - pacmanPosX) > abs(ghostPosition[0].y - pacmanPosY)) {
@@ -715,64 +712,157 @@ int main()
 			}
 
 
-			ghostMovement = 0;
+			ghostMovement1 = 0;
 		}
-		ghostMovement++;
+		ghostMovement1++;
 		//ghost rendering
-		glm::mat4 model_ghost;
-		glm::mat4 identity_matrix_dot(1.0f);
-		glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
-		glm::mat4 ghostTranslate = glm::translate(model_ghost, ghostPosition[0]);
-		model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+		glUniform1i(object_type_loc, 4);
+		glm::mat4 model_ghost1;
+		glm::mat4 identity_matrix_ghost1(1.0f);
+		glm::mat4 ghostScaled1 = glm::scale(model_ghost1, ghostScale*ghost_original_scale);//scale dot object
+		glm::mat4 ghostTranslate1 = glm::translate(model_ghost1, ghostPosition[0]);
+		model_ghost1 = ghostTranslate1 * ghostScaled1 *identity_matrix_ghost1;
 
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost1)); // pass model_dot to shader
 																					//render the dots
 		glBindVertexArray(VAO_cube);
 		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
 		glBindVertexArray(0);
 
 
-		//ghost number 2
-		//if (ghostMovement == 105) {
-		//	if (abs(ghostPosition[1].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[1].y - pacmanPosY) < 0.0000001f) {
-		//		resetGame();
-		//	}
-		//	else if (abs(ghostPosition[1].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[1].y - pacmanPosY) > 0.000000001f) {
-		//		if (abs(ghostPosition[1].x - pacmanPosX) > abs(ghostPosition[1].y - pacmanPosY)) {
-		//			if (ghostPosition[1].x < pacmanPosX) {
-		//				ghostPosition[1].x = ghostPosition[1].x + 0.04f;
-		//			}
-		//			else if (ghostPosition[1].x > pacmanPosX) {
-		//				ghostPosition[1].x = ghostPosition[1].x - 0.04f;
-		//			}
+												//ghost number 2
 
-		//		}
-		//		else {
-		//			if (ghostPosition[1].y < pacmanPosY) {
-		//				ghostPosition[1].y = ghostPosition[1].y + 0.04f;
-		//			}
-		//			else if (ghostPosition[1].y > pacmanPosY) {
-		//				ghostPosition[1].y = ghostPosition[1].y - 0.04f;
-		//			}
-		//		}
-		//	}
+		if (ghostMovement2 == 20) {//to control the speed of the ghosts
+			if (abs(ghostPosition[1].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[1].y - pacmanPosY) < 0.0000001f) {
+				resetGame();//once the ghost touches pacman, the game restarts
+			}
+			else if (abs(ghostPosition[1].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[1].y - pacmanPosY) > 0.000000001f) {
+				if (abs(ghostPosition[1].x - pacmanPosX) > abs(ghostPosition[1].y - pacmanPosY)) {
+					if (ghostPosition[1].x < pacmanPosX) {
+						ghostPosition[1].x = ghostPosition[1].x + 0.04f;
+					}
+					else if (ghostPosition[1].x > pacmanPosX) {
+						ghostPosition[1].x = ghostPosition[1].x - 0.04f;
+					}
+
+				}
+				else {
+					if (ghostPosition[1].y < pacmanPosY) {
+						ghostPosition[1].y = ghostPosition[1].y + 0.04f;
+					}
+					else if (ghostPosition[1].y > pacmanPosY) {
+						ghostPosition[1].y = ghostPosition[1].y - 0.04f;
+					}
+				}
+			}
 
 
-		//	ghostMovement = 0;
-		//}
-		//ghostMovement++;
-		////ghost rendering
-		//glm::mat4 model_ghost;
-		//glm::mat4 identity_matrix_dot(1.0f);
-		//glm::mat4 ghostScaled = glm::scale(model_ghost, ghostScale*dot_original_scale);//scale dot object
-		//glm::mat4 ghostTranslate = glm::translate(model_ghost, ghostPosition[1]);
-		//model_ghost = ghostTranslate * ghostScaled *identity_matrix_dot;
+			ghostMovement2 = 0;
+		}
+		ghostMovement2++;
+		//ghost rendering
+		glUniform1i(object_type_loc, 5);
+		glm::mat4 model_ghost2;
+		glm::mat4 identity_matrix_ghost2(1.0f);
+		glm::mat4 ghostScaled2 = glm::scale(model_ghost2, ghostScale*ghost_original_scale);//scale dot object
+		glm::mat4 ghostTranslate2 = glm::translate(model_ghost2, ghostPosition[1]);
+		model_ghost2 = ghostTranslate2 * ghostScaled2 *identity_matrix_ghost2;
 
-		//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost)); // pass model_dot to shader
-		//																			//render the dots
-		//glBindVertexArray(VAO_cube);
-		//glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
-		//glBindVertexArray(0);
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost2)); // pass model_dot to shader
+																					//render the dots
+		glBindVertexArray(VAO_cube);
+		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		glBindVertexArray(0);
+
+												//ghost number 3	
+
+
+		if (ghostMovement3 == 30) {//to control the speed of the ghosts
+			if (abs(ghostPosition[2].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[2].y - pacmanPosY) < 0.0000001f) {
+				resetGame();//once the ghost touches pacman, the game will restart
+			}
+			else if (abs(ghostPosition[2].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[2].y - pacmanPosY) > 0.000000001f) {
+				if (abs(ghostPosition[2].x - pacmanPosX) > abs(ghostPosition[2].y - pacmanPosY)) {
+					if (ghostPosition[2].x < pacmanPosX) {
+						ghostPosition[2].x = ghostPosition[2].x + 0.04f;
+					}
+					else if (ghostPosition[2].x > pacmanPosX) {
+						ghostPosition[2].x = ghostPosition[2].x - 0.04f;
+					}
+
+				}
+				else {
+					if (ghostPosition[2].y < pacmanPosY) {
+						ghostPosition[2].y = ghostPosition[2].y + 0.04f;
+					}
+					else if (ghostPosition[2].y > pacmanPosY) {
+						ghostPosition[2].y = ghostPosition[2].y - 0.04f;
+					}
+				}
+			}
+
+
+			ghostMovement3 = 0;
+		}
+		ghostMovement3++;
+		//ghost rendering
+		glUniform1i(object_type_loc, 6);
+		glm::mat4 model_ghost3;
+		glm::mat4 identity_matrix_ghost3(1.0f);
+		glm::mat4 ghostScaled3 = glm::scale(model_ghost3, ghostScale*ghost_original_scale);//scale dot object
+		glm::mat4 ghostTranslate3 = glm::translate(model_ghost3, ghostPosition[2]);
+		model_ghost3 = ghostTranslate3 * ghostScaled3 *identity_matrix_ghost3;
+
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost3)); // pass model_dot to shader
+																					 //render the dots
+		glBindVertexArray(VAO_cube);
+		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		glBindVertexArray(0);
+
+														//ghost number 4	
+
+
+		if (ghostMovement4 == 15) {//to control the speed of the ghosts
+			if (abs(ghostPosition[3].x - pacmanPosX) < 0.0000001f && abs(ghostPosition[3].y - pacmanPosY) < 0.0000001f) {
+				resetGame();//once the ghost touches pacman, the game will restart
+			}
+			else if (abs(ghostPosition[3].x - pacmanPosX) > 0.000000001f && abs(ghostPosition[3].y - pacmanPosY) > 0.000000001f) {
+				if (abs(ghostPosition[3].x - pacmanPosX) > abs(ghostPosition[3].y - pacmanPosY)) {
+					if (ghostPosition[3].x < pacmanPosX) {
+						ghostPosition[3].x = ghostPosition[3].x + 0.04f;
+					}
+					else if (ghostPosition[3].x > pacmanPosX) {
+						ghostPosition[3].x = ghostPosition[3].x - 0.04f;
+					}
+
+				}
+				else {
+					if (ghostPosition[3].y < pacmanPosY) {
+						ghostPosition[3].y = ghostPosition[3].y + 0.04f;
+					}
+					else if (ghostPosition[3].y > pacmanPosY) {
+						ghostPosition[3].y = ghostPosition[3].y - 0.04f;
+					}
+				}
+			}
+
+
+			ghostMovement4 = 0;
+		}
+		ghostMovement4++;
+		//ghost rendering
+		glUniform1i(object_type_loc, 7);
+		glm::mat4 model_ghost4;
+		glm::mat4 identity_matrix_ghost4(1.0f);
+		glm::mat4 ghostScaled4 = glm::scale(model_ghost4, ghostScale*ghost_original_scale);//scale dot object
+		glm::mat4 ghostTranslate4 = glm::translate(model_ghost4, ghostPosition[3]);
+		model_ghost4 = ghostTranslate4 * ghostScaled4 *identity_matrix_ghost4;
+
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost4)); // pass model_dot to shader
+																					 //render the dots
+		glBindVertexArray(VAO_cube);
+		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		glBindVertexArray(0);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -869,7 +959,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void resetGame() {
-	ghostMovement = 0;
+	ghostMovement1 = 0;
+	ghostMovement2 = 0;
+	ghostMovement3 = 0;
+	ghostMovement4 = 0;
 	pacmanPosX = getXPosition();
 	pacmanPosY = getYPosition();
 	for (int i = 0; i <= 5; i++) {//this will create random positions for the food
