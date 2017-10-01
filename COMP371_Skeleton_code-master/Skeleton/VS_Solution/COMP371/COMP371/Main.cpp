@@ -29,6 +29,7 @@ glm::vec3 triangle_scale;
 glm::mat4 projection_matrix;
 
 float cameraX = 0.0f;
+float cameraY = 0.0f;
 float cameraZ = 1.0f;
 float radius = 5.0f;
 
@@ -465,7 +466,7 @@ int main()
 		//glm::vec3 up(pacmanPosX, 1.0f, 0.0f);//camera focuses on pacman
 		glm::vec3 center(0.0f, 0.0f, 0.0f);
 		glm::vec3 up(0.0f, 1.0f, 0.0f);
-		glm::vec3 eye(cameraX, 0.0f, cameraZ);
+		glm::vec3 eye(cameraX, cameraY, cameraZ);
 
 		//glm::mat4 r_m = glm::rotate(glm::mat4(1.0f), ROTATOR, glm::vec3(0, 1, 0))
 		//eye + center normalize
@@ -888,28 +889,48 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
 		cameraX = cameraX + 0.05f;
-		//cameraX += radius;
-		//cameraZ = cos(glfwGetTime())*radius;
-
+		if (cameraX >= 0.0f) {
+			cameraZ = cameraZ - 0.03f;
+		}
+		else {
+			cameraZ = cameraZ + 0.03f;
+		}
 	}
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 		cameraX = cameraX - 0.05f;
-		//cameraX -= radius;
-		//cameraZ = -cos(glfwGetTime())*radius;
+		if (cameraX <= 0.0f) {
+			cameraZ = cameraZ - 0.03f;
+		}
+		else {
+			cameraZ = cameraZ + 0.03f;
+		}
 
 	}
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {//move the camera closer to the grid
-		if (cameraZ <= 0.05f) {
-			cout << "TOO FAR" << endl;
-		}
-		else {
-			cameraZ = cameraZ - 0.05f;
-		}
-
+			cameraY = cameraY + 0.05f;
+			if (cameraY >= 0.0f) {
+				cameraZ = cameraZ - 0.03f;
+			}
+			else {
+				cameraZ = cameraZ + 0.03f;
+			}
+		
 	}
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {//move the camera further from the grid
-		cameraZ = cameraZ + 0.05f;
+		cameraY = cameraY - 0.05f;
+		if (cameraY <= 0.0f) {
+			cameraZ = cameraZ - 0.03f;
+		}
+		else {
+			cameraZ = cameraZ + 0.03f;
+		}
 	}
+	if (key == GLFW_KEY_HOME && action == GLFW_PRESS) {//move the camera further from the grid
+			cameraX = 0.0f;
+			cameraY = 0.0f;
+			cameraZ =1.0f;
+	}
+
 	if (key == GLFW_KEY_U && action == GLFW_PRESS) {//scale up the objects
 		pacmanScale += 0.2f;
 		dotScale += 0.2f;
