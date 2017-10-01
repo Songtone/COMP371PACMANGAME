@@ -28,10 +28,10 @@ glm::vec3 camera_position;
 glm::vec3 triangle_scale;
 glm::mat4 projection_matrix;
 
+//set camera original position
 float cameraX = 0.0f;
 float cameraY = 0.0f;
 float cameraZ = 1.0f;
-float radius = 5.0f;
 
 //pacman variables
 float pacmanScale = 1.0f;
@@ -57,7 +57,6 @@ int ghostMovement3 = 0;
 int ghostMovement4 = 0;
 glm::vec3 ghostPosition[4];
 
-float ROTATOR = 0.0f;
 
 float getXPosition();//get the random numbers for the positions of the dots and pacman
 float getYPosition();
@@ -67,6 +66,10 @@ int xPosition; //for random numbers
 
 float rangeX;//distance between pacman and a sphere
 float rangeY;
+
+int renderTriangles = 0;
+int renderLines = 0;
+int renderPoints = 0;
 
 void resetGame();//function to reset the game
 
@@ -523,7 +526,15 @@ int main()
 		 //glDrawArrays(GL_TRIANGLES, 0, verticesTeapot.size());
 								//rendering pacman
 		glBindVertexArray(VAO_pacman);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		if (renderTriangles == 0) {
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		}
+		else if (renderLines == 0) {
+			glDrawArrays(GL_LINES, 0, vertices.size());
+		}
+		else if (renderPoints == 0) {
+			glDrawArrays(GL_POINTS, 0, vertices.size());
+		}
 		glBindVertexArray(0);
 
 		//begin of dots section
@@ -547,7 +558,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -572,7 +591,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -597,7 +624,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -622,7 +657,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -647,7 +690,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -671,7 +722,15 @@ int main()
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_dot)); // pass model_dot to shader
 																						  //render the dots
 				glBindVertexArray(VAO_sphere);
-				glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				if (renderTriangles == 0) {
+					glDrawArrays(GL_TRIANGLES, 0, verticesSphere.size());
+				}
+				else if (renderLines == 0) {
+					glDrawArrays(GL_LINES, 0, verticesSphere.size());
+				}
+				else if (renderPoints == 0) {
+					glDrawArrays(GL_POINTS, 0, verticesSphere.size());
+				}
 				glBindVertexArray(0);
 
 
@@ -727,7 +786,15 @@ int main()
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost1)); // pass model_dot to shader
 																					//render the dots
 		glBindVertexArray(VAO_cube);
-		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		if (renderTriangles == 0) {
+			glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		}
+		else if (renderLines == 0) {
+			glDrawArrays(GL_LINES, 0, verticesCube.size());
+		}
+		else if (renderPoints == 0) {
+			glDrawArrays(GL_POINTS, 0, verticesCube.size());
+		}
 		glBindVertexArray(0);
 
 
@@ -772,7 +839,15 @@ int main()
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost2)); // pass model_dot to shader
 																					//render the dots
 		glBindVertexArray(VAO_cube);
-		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		if (renderTriangles == 0) {
+			glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		}
+		else if (renderLines == 0) {
+			glDrawArrays(GL_LINES, 0, verticesCube.size());
+		}
+		else if (renderPoints == 0) {
+			glDrawArrays(GL_POINTS, 0, verticesCube.size());
+		}
 		glBindVertexArray(0);
 
 												//ghost number 3	
@@ -817,7 +892,15 @@ int main()
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost3)); // pass model_dot to shader
 																					 //render the dots
 		glBindVertexArray(VAO_cube);
-		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		if (renderTriangles == 0) {
+			glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		}
+		else if (renderLines == 0) {
+			glDrawArrays(GL_LINES, 0, verticesCube.size());
+		}
+		else if (renderPoints == 0) {
+			glDrawArrays(GL_POINTS, 0, verticesCube.size());
+		}
 		glBindVertexArray(0);
 
 														//ghost number 4	
@@ -862,7 +945,15 @@ int main()
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model_ghost4)); // pass model_dot to shader
 																					 //render the dots
 		glBindVertexArray(VAO_cube);
-		glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		if (renderTriangles == 0) {
+			glDrawArrays(GL_TRIANGLES, 0, verticesCube.size());
+		}
+		else if (renderLines == 0) {
+			glDrawArrays(GL_LINES, 0, verticesCube.size());
+		}
+		else if (renderPoints == 0) {
+			glDrawArrays(GL_POINTS, 0, verticesCube.size());
+		}
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
@@ -879,50 +970,60 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	std::cout << key << std::endl;
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) {//polygon with lines
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		renderLines = 0;
+		renderPoints = 1;
+		renderTriangles = 1;
 	}
-	if (key == GLFW_KEY_F && action == GLFW_PRESS) {//full polygon
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+	
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) {//dot polygon
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		renderLines = 1;
+		renderPoints = 0;
+		renderTriangles = 1;
+
+	}if (key == GLFW_KEY_T && action == GLFW_PRESS) {//dot polygon
+		renderLines = 1;
+		renderPoints = 1;
+		renderTriangles = 0;
 	}
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+
 		cameraX = cameraX + 0.05f;
 		if (cameraX >= 0.0f) {
-			cameraZ = cameraZ - 0.03f;
+			cameraZ = cameraZ - 0.02f;
 		}
 		else {
-			cameraZ = cameraZ + 0.03f;
+			cameraZ = cameraZ + 0.02f;
 		}
 	}
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 		cameraX = cameraX - 0.05f;
 		if (cameraX <= 0.0f) {
-			cameraZ = cameraZ - 0.03f;
+			cameraZ = cameraZ - 0.02f;
 		}
 		else {
-			cameraZ = cameraZ + 0.03f;
+			cameraZ = cameraZ + 0.02f;
 		}
 
 	}
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {//move the camera closer to the grid
-			cameraY = cameraY + 0.05f;
-			if (cameraY >= 0.0f) {
-				cameraZ = cameraZ - 0.03f;
-			}
-			else {
-				cameraZ = cameraZ + 0.03f;
-			}
+		cameraY = cameraY + 0.05f;
+		if (cameraY >= 0.0f) {
+			cameraZ = cameraZ - 0.02f;
+		}
+		else {
+			cameraZ = cameraZ + 0.02f;
+		}
 		
 	}
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {//move the camera further from the grid
 		cameraY = cameraY - 0.05f;
 		if (cameraY <= 0.0f) {
-			cameraZ = cameraZ - 0.03f;
+			cameraZ = cameraZ - 0.02f;
 		}
 		else {
-			cameraZ = cameraZ + 0.03f;
+			cameraZ = cameraZ + 0.02f;
 		}
 	}
 	if (key == GLFW_KEY_HOME && action == GLFW_PRESS) {//move the camera further from the grid
