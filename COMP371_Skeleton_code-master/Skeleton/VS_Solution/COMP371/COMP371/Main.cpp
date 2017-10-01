@@ -1,4 +1,5 @@
 //example skeleton code
+//used http://www.glfw.org/docs/latest/input_guide.html, http://learnopengl.com/ and TA for help on coding
 //modified from http://learnopengl.com/
 
 #include "stdafx.h"
@@ -16,11 +17,7 @@
 
 using namespace std;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-void cursor_callback(GLFWwindow* window, double xpos, double ypos);
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 800;
 
@@ -32,6 +29,7 @@ glm::mat4 projection_matrix;
 float cameraX = 0.0f;
 float cameraY = 0.0f;
 float cameraZ = 1.0f;
+float panning = 0.0f;
 
 //pacman variables
 float pacmanScale = 1.0f;
@@ -49,7 +47,7 @@ bool dotNotEaten5 = true;
 float dotScale = 1.0f;
 glm::vec3 dotPosition[6];
 
-
+//ghost variables
 float ghostScale = 1.0f;//scale for the ghost
 int ghostMovement1 = 0;//initializing the original movement of ghost counter
 int ghostMovement2 = 0;
@@ -67,10 +65,26 @@ int xPosition; //for random numbers
 float rangeX;//distance between pacman and a sphere
 float rangeY;
 
+//to render the different polygons of the objects
 int renderTriangles = 0;
 int renderLines = 0;
 int renderPoints = 0;
 
+//used in the mouse function
+bool allowZoom = false;
+bool allowPan = false;
+bool allowTilt = false;
+
+float lastX = WIDTH / 2.0f;
+float lastY = HEIGHT / 2.0f;
+float xoffset;
+float yoffset;
+
+//functions used
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void cursor_callback(GLFWwindow* window, double xpos, double ypos);
 void resetGame();//function to reset the game
 
 				 // The MAIN function, from here we start the application and run the game loop
@@ -95,6 +109,8 @@ int main()
 	glfwMakeContextCurrent(window);
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, cursor_callback);
 
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
@@ -442,7 +458,7 @@ int main()
 	glm::vec3 pacman_original_scale = glm::vec3(0.001f);
 	glm::vec3 dot_original_scale = glm::vec3(0.01f);
 	glm::vec3 ghost_original_scale = glm::vec3(0.01f);
-
+	
 
 
 	GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection_matrix");
@@ -470,14 +486,13 @@ int main()
 		glm::vec3 center(0.0f, 0.0f, 0.0f);
 		glm::vec3 up(0.0f, 1.0f, 0.0f);
 		glm::vec3 eye(cameraX, cameraY, cameraZ);
-
-		//glm::mat4 r_m = glm::rotate(glm::mat4(1.0f), ROTATOR, glm::vec3(0, 1, 0))
-		//eye + center normalize
-
-
+		//camera model
 		glm::mat4 view_matrix;
 		view_matrix = glm::lookAt(eye, center, up);
 
+		//to adjust camera position when using the mouse cursor
+		view_matrix = glm::translate(view_matrix, glm::vec3(panning, 0.0f, 0.0f));
+		
 		glm::mat4 model_grid;
 		model_grid = glm::scale(model_grid, 200.0f * triangle_scale);
 
@@ -967,7 +982,6 @@ int main()
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-
 	std::cout << key << std::endl;
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) {//polygon with lines
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -988,7 +1002,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		renderTriangles = 0;
 	}
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-
 		cameraX = cameraX + 0.05f;
 		if (cameraX >= 0.0f) {
 			cameraZ = cameraZ - 0.02f;
@@ -1005,7 +1018,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else {
 			cameraZ = cameraZ + 0.02f;
 		}
-
 	}
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {//move the camera closer to the grid
 		cameraY = cameraY + 0.05f;
@@ -1015,7 +1027,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else {
 			cameraZ = cameraZ + 0.02f;
 		}
-		
 	}
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {//move the camera further from the grid
 		cameraY = cameraY - 0.05f;
@@ -1075,12 +1086,114 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+void cursor_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (allowPan == true) {
+		xoffset = xpos - lastX;
+		lastX = xpos;
+		if (xoffset < 0.0f) {//going left
+			panning -= 0.015f;
+		}
+		else if (xoffset > 0.0f) {//going right
+			panning += 0.015f;
+		}
+	}
+	if (allowTilt == true) {
+		yoffset = ypos - lastY;
+		lastY = ypos;
+		xoffset = xpos - lastX;
+		lastX = xpos;
+		if (yoffset < 0.0f) {//upwards
+			if (cameraY >= 0.0f) {
+				cameraY += 0.015f;
+				cameraZ -= 0.015f;
+			}
+			else if (cameraY <= 0.0f) {
+				cameraY += 0.015f;
+				cameraZ += 0.015f;
+			}
+		}
+		else if (yoffset > 0.0f) {//downwards
+			if (cameraY >= 0.0f) {
+				cameraY -= 0.015f;
+				cameraZ += 0.015f;
+			}
+			else if (cameraY <= 0.0f) {
+				cameraY -= 0.015f;
+				cameraZ -= 0.015f;
+			}
+		}if (xoffset < 0.0f) {//left
+			if (cameraX >= 0.0f) {
+				cameraX -= 0.015f;
+				cameraZ += 0.015f;
+			}
+			else if (cameraY <= 0.0f) {
+				cameraX -= 0.015f;
+				cameraZ -= 0.015f;
+			}
+		}
+		else if (yoffset > 0.0f) {//right
+			if (cameraX >= 0.0f) {
+				cameraX += 0.015f;
+				cameraZ -= 0.015f;
+			}
+			else if (cameraY <= 0.0f) {
+				cameraX += 0.015f;
+				cameraZ += 0.015f;
+			}
+		}
+	}
+	if (allowZoom == true) {
+		yoffset = ypos - lastY;
+		lastY = ypos;
+		if (yoffset < 0.0f) {//upwards
+			if (cameraZ > 0.1f) {
+				cameraZ -= 0.015f;
+			}
+		}
+		else if (yoffset > 0.0f) {//downwards
+			cameraZ += 0.015f;
+		}
+	}
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		allowZoom = true;
+		
+	}
+	else {
+		allowZoom = false;
+		
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
+		
+		allowTilt = true;
+	}
+	else {
+		allowTilt = false;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		allowPan = true;
+	}
+	else {
+		allowPan = false;
+		
+	}
+
+}
+
+//making sure the objects keep their aspect ratio
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	projection_matrix = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.0f, 100.0f);
 	glViewport(0, 0, width, height);
 }
-
+//this function will reset the game. Resets dot position, pacman position, camera position, grid position
 void resetGame() {
+	panning = 0.0f;
+	cameraX = 0.0f;
+	cameraY = 0.0f;
+	cameraZ = 1.0f;
 	ghostMovement1 = 0;
 	ghostMovement2 = 0;
 	ghostMovement3 = 0;
@@ -1098,6 +1211,7 @@ void resetGame() {
 
 	}
 }
+
 
 float getYPosition() {//will get a random position on the Y axis
 
